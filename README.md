@@ -1,4 +1,6 @@
-Role Name
+[![Build Status](https://travis-ci.org/IRMooBear/ansible.nginx_configure_vhosts.svg?branch=master)](https://travis-ci.org/IRMooBear/ansible.nginx_configure_vhosts)
+
+Nginx Configure VHosts
 =========
 
 WIP DO NOT USE.
