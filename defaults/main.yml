@@ -1,0 +1,5 @@
+---
+# defaults file for nginx_configure_vhosts
+websites_php_port: 9000
+websites_php_fastcgi_pass: 127.0.0.1
+websites_port: 80

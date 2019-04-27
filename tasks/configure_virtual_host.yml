@@ -1,0 +1,36 @@
+---
+- debug:
+    msg: working with {{ item.key }}
+- debug:
+    var: item.value
+- name: copy php virtual host
+  become: yes
+  template:
+    src: vhost.php.conf.ini
+    dest: /etc/nginx/sites-available/{{ item.key }}.conf
+    mode: 0644
+  notify: reload nginx
+  when: item.value.type == "php"
+- name: copy ruby virtual host
+  become: yes
+  template:
+    src: vhost.ruby.conf.ini
+    dest: /etc/nginx/sites-available/{{ item.key }}.conf
+    mode: 0644
+  notify: reload nginx
+  when: item.value.type == "ruby"
+- name: create symlink
+  become: yes
+  file:
+    path: /etc/nginx/sites-enabled/{{ item.key }}.conf
+    src: /etc/nginx/sites-available/{{ item.key }}.conf
+    state: link
+  notify: reload nginx
+  when: item.value.state == 'present'
+- name: remove symlink
+  become: yes
+  file:
+    path: /etc/nginx/sites-enabled/{{ item.key }}.conf
+    state: absent
+  notify: reload nginx
+  when: item.value.state == 'absent'
