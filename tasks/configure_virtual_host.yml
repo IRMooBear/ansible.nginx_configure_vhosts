@@ -19,6 +19,52 @@
     mode: 0644
   notify: reload nginx
   when: item.value.type == "ruby"
+- name: copy archive virtual host
+  become: yes
+  template:
+    src: vhost.archive.conf.ini
+    dest: /etc/nginx/sites-available/{{ item.key }}.conf
+    mode: 0644
+  notify: reload nginx
+  when: item.value.type == "archive"
+- name: copy drupal virtual host
+  become: yes
+  template:
+    src: vhost.drupal.conf.ini
+    dest: /etc/nginx/sites-available/{{ item.key }}.conf
+    mode: 0644
+  notify: reload nginx
+  when: item.value.type == 'drupal'
+- name: create ssl directory
+  become: yes
+  file:
+    path: /etc/nginx/ssl/{{ item.value.server_name }}
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: item.value.ssl is defined and item.value.ssl
+- name: copy ssl certificate bundle
+  become: yes
+  copy:
+    src: "{{ item.value.ssl_cert }}"
+    dest: /etc/nginx/ssl/{{ item.value.server_name }}/{{ item.value.server_name }}.bundle.crt
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload nginx
+  when: item.value.ssl is defined and item.value.ssl
+- name: copy ssl private key
+  become: yes
+  copy:
+    src: "{{ item.value.ssl_key }}"
+    dest: /etc/nginx/ssl/{{ item.value.server_name }}/{{ item.value.server_name}}.key
+    owner: root
+    group: root
+    mode: 0600
+  notify: reload nginx
+  when: item.value.ssl is defined and item.value.ssl
+#Create or remove symlink based on site status
 - name: create symlink
   become: yes
   file:
