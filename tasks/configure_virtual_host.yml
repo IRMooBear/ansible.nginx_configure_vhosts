@@ -10,7 +10,7 @@
     dest: /etc/nginx/sites-available/{{ item.key }}.conf
     mode: 0644
   notify: reload nginx
-  when: item.value.type == "php"
+  when: item.value.type == "php" or item.value.type == 'wordpress'
 - name: copy ruby virtual host
   become: yes
   template:
