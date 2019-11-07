@@ -35,6 +35,14 @@
     mode: 0644
   notify: reload nginx
   when: item.value.type == 'drupal'
+- name: copy forwarding virtual host
+  become: yes
+  template:
+    src: vhost.forward.conf.ini
+    dest: /etc/nginx/sites-available/{{ item.key }}.conf
+    mode: 0644
+  notify: reload nginx
+  when: item.value.type == 'forward'
 - name: create ssl directory
   become: yes
   file:
